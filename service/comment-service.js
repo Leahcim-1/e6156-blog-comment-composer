@@ -4,14 +4,18 @@ export default class CommentService {
   }
 
   async getAllComments() {
-    return this.commentReq.get('/api/comments')
+    return await this.commentReq.get('/api/comments')
   }
 
   async getCommentsByBlogId(id) {
-    return this.commentReq.get(`/api/comments/blog/${id}`)
+    return await this.commentReq.get(`/api/comments/blog/${id}`)
   }
 
   async postComment(data) {
-    return this.commentReq.post(`/api/comments/`, { data })
+    return await this.commentReq.post(`/api/comments/`, { data })
+  }
+
+  async delCommentByBlogId(blogId) {
+    return await this.commentReq.delete(`/api/commments/blog/${blogId}`)
   }
 }

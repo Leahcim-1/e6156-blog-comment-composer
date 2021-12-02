@@ -32,7 +32,7 @@ router.get('/', ctx => {
 router.get('/api/blogs-comments', async ctx => {
   const blogsPromise = blogService.getAllBlogs()
   const commentsPromise = commentService.getAllComments()
-  const data = Promise.all([blogsPromise, commentsPromise])
+  const data = await Promise.all([blogsPromise, commentsPromise])
   return data
 })
 
@@ -57,6 +57,29 @@ router.get('/api/blogs-comments', async ctx => {
   // * Retrieve all comments by blog id
   const { id } = blogRes.data
   return await commentService.getCommentsByBlogId(id)
+})
+
+/**
+ * @METHOD DELETE
+ * @PATH /api/comments/blog/:blogId
+ * Synchronous API Call: 
+ * Check the blog whether existed first
+ * then deleting all comments by blog id
+ */
+router.del('/api/comments/blog/:blogId', async ctx => {
+  const { blogId } = ctx.params
+  const blogRes = await blogService.getBlogById(blogId)
+
+  // * Check the blog whether existed first
+  if (blogRes.status == 404) {
+    ctx.body = createResBody("Non Existed Blog Id!")
+    ctx.status = 404
+    return
+  }
+
+  // * Delete all comments by blog id
+  const { id } = blogRes.data
+  return await commentService.delCommentByBlogId(id)
 })
 
 export default router
